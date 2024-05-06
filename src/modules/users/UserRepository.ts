@@ -1,10 +1,13 @@
 import knex from "knex";
+import { Service } from "typedi";
 import config from "../../../knexfile";
-import { IUser } from "./IUser";
+import { IUser } from "../../entities/IUser";
+
+@Service()
 export class UserRepository {
   addUser(user: IUser) {
     return knex(config)("users").insert({
-      name: user.name,
+      ...user,
     });
   }
 
@@ -13,13 +16,13 @@ export class UserRepository {
   }
 
   getUser(targetID: number) {
-    return knex(config)("users").where({ id: targetID }).select("id", "name");
+    return knex(config)("users").where({ id: targetID })
   }
 
   updateUser(user: IUser) {
     return knex(config)("users")
       .where({ id: user.id })
-      .update({ name: user.name });
+      .update({ ...user });
   }
 
   deleteUser(targetID: string) {

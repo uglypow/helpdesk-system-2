@@ -8,11 +8,13 @@ import {
   Post,
   Put,
 } from "routing-controllers";
-import { IUser } from "../repositories/IUser";
-import { UserService } from "../services/UserService";
+import Container from "typedi";
+import { IUser } from "../../entities/IUser";
+import { UserService } from "./UserService";
+
 @JsonController()
 export class UserController {
-  userService = new UserService();
+  userService = Container.get(UserService);
 
   @Get("/users")
   getAll() {
@@ -32,14 +34,14 @@ export class UserController {
   @Put("/users/:id")
   put(@Param("id") id: string, @Body() user: IUser) {
     const newUser = {
+      ...user,
       id: id,
-      name: user.name
-    }
+    };
     return this.userService.updateUser(newUser);
   }
 
   @Delete("/users/:id")
   remove(@Param("id") id: string) {
-    return this.userService.delete(id);
+    return this.userService.deleteUser(id);
   }
 }
