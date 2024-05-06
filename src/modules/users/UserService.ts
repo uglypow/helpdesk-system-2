@@ -1,7 +1,11 @@
-import { UserRepository } from "../repositories/UserRepository";
-import { IUser } from "../repositories/IUser";
+import { Inject, Service } from "typedi";
+import { IUser } from "../../entities/IUser";
+import { UserRepository } from "./UserRepository";
+
+@Service()
 export class UserService {
-  userRepo = new UserRepository();
+  @Inject()
+  userRepo: UserRepository;
 
   getAllUser() {
     return this.userRepo.getAllUser();
@@ -19,7 +23,7 @@ export class UserService {
     return this.userRepo.updateUser(user);
   }
 
-  delete(id: string) {
+  deleteUser(id: string) {
     return this.userRepo.deleteUser(id);
   }
 }

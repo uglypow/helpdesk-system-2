@@ -1,12 +1,15 @@
-// Update with your config settings.
+import * as DotEnv from "dotenv"
+
+DotEnv.config();
+
 const config = {
-  client: "mysql2",
+  client: process.env.DATABASE__DRIVER,
   connection: {
-    host: "localhost",
-    database: "users",
-    user: "root",
-    password: "mypassword",
-    port: "3308",
+    host: process.env.DATABASE__HOST,
+    database: process.env.DATABASE__DATABASE,
+    user: process.env.DATABASE__USER,
+    password: process.env.DATABASE__PASSWORD,
+    port: Number.parseInt(process.env.DATABASE__PORT || "3308"),
   },
   pool: {
     min: parseInt(process.env.DATABASE__POOL_MIN || "1"),
@@ -15,7 +18,7 @@ const config = {
   },
   migrations: { directory: "./migrations/" },
   seeds: {
-    directory: './seeds/dev',
+    directory: "./seeds/",
   },
 };
-export default config
+export default config;
