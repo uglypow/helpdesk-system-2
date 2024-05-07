@@ -1,18 +1,20 @@
-import "reflect-metadata";
 import {
   Body,
   Delete,
   Get,
   JsonController,
   Param,
+  Patch,
   Post,
   Put,
-  Patch,
 } from "routing-controllers";
-import { ITicket } from "../../entities/ITicket";
-import { TicketService } from "./TicketService";
 import Container from "typedi";
-import { UpdateTicketStatus, updateTicket } from "./dto/TicketRequest";
+import { TicketService } from "./TicketService";
+import {
+  CreateTicketRequest,
+  UpdateTicketRequest,
+  UpdateTicketStatusRequest,
+} from "./dto/TicketRequest";
 
 @JsonController()
 export class TicketController {
@@ -29,18 +31,18 @@ export class TicketController {
   }
 
   @Post("/tickets")
-  post(@Body() ticket: ITicket) {
-    return this.ticketService.addTicket(ticket);
+  post(@Body() body: CreateTicketRequest) {
+    return this.ticketService.addTicket(body);
   }
 
   @Put("/tickets/:id")
-  put(@Param("id") id: string, @Body() body: updateTicket) {
+  put(@Param("id") id: string, @Body() body: UpdateTicketRequest) {
     return this.ticketService.updateTicket(id, body);
   }
 
   @Patch("/tickets/:id")
-  patch(@Param("id") id: string, @Body() body: UpdateTicketStatus) {
-    return this.ticketService.updateTicketStatus(id, body)
+  patch(@Param("id") id: string, @Body() body: UpdateTicketStatusRequest) {
+    return this.ticketService.updateTicketStatus(id, body);
   }
 
   @Delete("/tickets/:id")

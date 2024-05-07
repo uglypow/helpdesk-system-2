@@ -1,4 +1,4 @@
-import { TicketStatus } from "../modules/tickets/model/Definations";
+import { TicketStatus } from "../../modules/tickets/model/Definations";
 
 export interface ITicket {
   id: string;

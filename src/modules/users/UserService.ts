@@ -1,5 +1,5 @@
 import { Inject, Service } from "typedi";
-import { IUser } from "../../entities/IUser";
+import { IUser } from "../../abstraction/entities/IUser";
 import { UserRepository } from "./UserRepository";
 
 @Service()

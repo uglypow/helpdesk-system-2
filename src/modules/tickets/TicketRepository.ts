@@ -1,8 +1,7 @@
 import knex from "knex";
 import { Service } from "typedi";
 import config from "../../../knexfile";
-import { ITicket } from "../../entities/ITicket";
-import { UpdateTicketStatus, updateTicket } from "./dto/TicketRequest";
+import { ITicket } from "../../abstraction/entities/ITicket";
 
 @Service()
 export class TicketRepository {
@@ -11,37 +10,21 @@ export class TicketRepository {
   }
 
   async getTicket(id: string): Promise<ITicket> {
-    const response = await knex(config)("tickets")
-      .where({ id: id })
-      .select("*");
-    return response[0];
+    return await knex(config)("tickets").where({ id: id }).first();
   }
 
-  async addTicket(ticket: ITicket): Promise<string> {
-    const response = await knex(config)("tickets").insert({
-      ...ticket,
-      created_at: new Date(),
-      updated_at: new Date(),
-    });
-    return response[0].toString();
-  }
-
-  async updateTicket(id: string, body: updateTicket): Promise<void> {
-    await knex(config)("tickets")
-      .where({ id: id })
-      .update({
-        ...body,
-      });
+  async addTicket(body: Partial<ITicket>): Promise<void> {
+    await knex(config)("tickets").insert(body);
     return;
   }
 
-  async updateTicketStatus(
-    id: string,
-    body: UpdateTicketStatus
-  ): Promise<void> {
-    await knex(config)("tickets")
-      .where({ id: id })
-      .update({ status: body.status, updated_at: new Date()});
+  async updateTicket(id: string, body: Partial<ITicket>): Promise<void> {
+    await knex(config)("tickets").where({ id: id }).update(body);
+    return;
+  }
+
+  async updateTicketStatus(id: string, body: Partial<ITicket>): Promise<void> {
+    await knex(config)("tickets").where({ id: id }).update(body);
     return;
   }
 

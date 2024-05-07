@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import {
   Body,
   Delete,
@@ -9,7 +8,7 @@ import {
   Put,
 } from "routing-controllers";
 import Container from "typedi";
-import { IUser } from "../../entities/IUser";
+import { IUser } from "../../abstraction/entities/IUser";
 import { UserService } from "./UserService";
 
 @JsonController()
@@ -33,11 +32,7 @@ export class UserController {
 
   @Put("/users/:id")
   put(@Param("id") id: string, @Body() user: IUser) {
-    const newUser = {
-      ...user,
-      id: id,
-    };
-    return this.userService.updateUser(newUser);
+    return this.userService.updateUser(user);
   }
 
   @Delete("/users/:id")

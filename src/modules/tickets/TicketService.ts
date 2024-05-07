@@ -1,8 +1,12 @@
 import { HttpError } from "routing-controllers";
 import { Inject, Service } from "typedi";
-import { ITicket } from "../../entities/ITicket";
+import { ITicket } from "../../abstraction/entities/ITicket";
 import { TicketRepository } from "./TicketRepository";
-import { UpdateTicketStatus, updateTicket } from "./dto/TicketRequest";
+import {
+  CreateTicketRequest,
+  UpdateTicketRequest,
+  UpdateTicketStatusRequest,
+} from "./dto/TicketRequest";
 import { TicketStatus } from "./model/Definations";
 
 @Service()
@@ -10,47 +14,32 @@ export class TicketService {
   @Inject()
   ticketRepo: TicketRepository;
 
-  getAllTicket(): Promise<ITicket[]> {
-    return this.ticketRepo.getAllTicket();
+  async getAllTicket(): Promise<ITicket[]> {
+    return await this.ticketRepo.getAllTicket();
   }
 
-  getTicket(id: string): Promise<ITicket> {
-    return this.ticketRepo.getTicket(id);
+  async getTicket(id: string): Promise<ITicket> {
+    return await this.ticketRepo.getTicket(id);
   }
 
-  async addTicket(ticket: ITicket): Promise<ITicket> {
-    const newTicketID = await this.ticketRepo.addTicket(ticket);
-
-    const newTicket = {
-      ...ticket,
-      id: newTicketID,
-      status: TicketStatus.PENDING,
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
-
+  async addTicket(body: CreateTicketRequest): Promise<Partial<ITicket>> {
+    const newTicket = body.toTicketEntity();
+    await this.ticketRepo.addTicket(newTicket);
     return newTicket;
   }
 
-  async updateTicket(id: string, body: updateTicket): Promise<ITicket> {
-    const currentTicket = await this.ticketRepo.getTicket(id);
-    await this.ticketRepo.updateTicket(id, body);
-
-    const ticket: ITicket = {
-      id: id,
-      title: body.title,
-      description: body.description,
-      contact: body.contact,
-      status: currentTicket.status,
-      created_at: currentTicket.created_at,
-      updated_at: new Date(),
-    };
-    return ticket;
+  async updateTicket(
+    id: string,
+    body: UpdateTicketRequest
+  ): Promise<Partial<ITicket>> {
+    const newTicket = body.toTicketEntity();
+    await this.ticketRepo.updateTicket(id, newTicket);
+    return newTicket;
   }
 
   async updateTicketStatus(
     id: string,
-    body: UpdateTicketStatus
+    body: UpdateTicketStatusRequest
   ): Promise<ITicket> {
     const currentTicket = await this.ticketRepo.getTicket(id);
     const currentStatus = currentTicket.status;
@@ -58,7 +47,8 @@ export class TicketService {
 
     if (
       currentStatus === TicketStatus.PENDING &&
-      requestStatus != TicketStatus.IN_PROGRESS
+      requestStatus != TicketStatus.IN_PROGRESS &&
+      requestStatus != TicketStatus.CANCELLED
     ) {
       throw new HttpError(
         400,
@@ -87,11 +77,15 @@ export class TicketService {
       );
     }
 
-    this.ticketRepo.updateTicketStatus(id, body);
-    return { ...currentTicket, status: requestStatus };
+    const updatedTicket = {
+      status: requestStatus,
+      updated_at: new Date(),
+    };
+    this.ticketRepo.updateTicketStatus(id, updatedTicket);
+    return { ...currentTicket, ...updatedTicket };
   }
 
-  deleteTicket(id: string) {
-    return this.ticketRepo.deleteTicket(id);
+  async deleteTicket(id: string) {
+    // return await this.ticketRepo.deleteTicket(id);
   }
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "dev": "nodemon src/app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
@@ -16,15 +16,15 @@
     "@types/node": "^20.12.8",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "dayjs": "^1.11.11",
     "dotenv": "^16.4.5",
     "knex": "^3.1.0",
     "koa": "^2.15.3",
     "koa-bodyparser": "^4.4.1",
-    "mysql": "^2.18.1",
+    "mocha": "^10.4.0",
     "mysql2": "^3.9.7",
     "reflect-metadata": "^0.2.2",
     "routing-controllers": "^0.10.4",
-    "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
     "typedi": "^0.10.0"

@@ -16,5 +16,15 @@ export async function seed(knex: Knex): Promise<void> {
       created_at: new Date(),
       updated_at: new Date(),
     },
+    {
+      id: 2,
+      title: "Server Maintenance",
+      description:
+        "Perform routine maintenance on servers to ensure optimal performance.",
+      contact: "Jane Smith",
+      status: TicketStatus.IN_PROGRESS,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
   ]);
 }
